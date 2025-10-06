@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Fichas de Treino - Academia</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-item input {
+            width: auto;
+        }
+        
+        .btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .ficha-treino {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .ficha-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .dias-treino {
+            margin-bottom: 25px;
+        }
+        
+        .dia-treino {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+        }
+        
+        .dia-titulo {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .exercicio {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .exercicio:last-child {
+            border-bottom: none;
+        }
+        
+        .exercicio-nome {
+            font-weight: 600;
+        }
+        
+        .exercicio-detalhes {
+            color: #666;
+        }
+        
+        .observacoes {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff9e6;
+            border-radius: 8px;
+            border-left: 4px solid #f1c40f;
+        }
+        
+        .print-btn {
+            background: var(--accent);
+            margin-top: 20px;
+        }
+        
+        .print-btn:hover {
+            background: #c0392b;
+        }
+        
+        @media print {
+            .no-print {
+                display: none;
+            }
+            
+            .ficha-treino {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Sistema de Fichas de Treino</h1>
+            <p class="subtitle">Crie treinos personalizados baseados no perfil do aluno</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="card no-print">
+            <h2 class="card-title">Informações do Aluno</h2>
+            <form id="alunoForm">
+                <div class="form-group">
+                    <label for="nome">Nome do Aluno</label>
+                    <input type="text" id="nome" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="idade">Idade</label>
+                    <input type="number" id="idade" min="12" max="100" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="peso">Peso (kg)</label>
+                    <input type="number" id="peso" min="30" max="200" step="0.1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="altura">Altura (cm)</label>
+                    <input type="number" id="altura" min="100" max="250" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="objetivo">Objetivo Principal</label>
+                    <select id="objetivo" required>
+                        <option value="">Selecione um objetivo</option>
+                        <option value="emagrecimento">Emagrecimento</option>
+                        <option value="hipertrofia">Hipertrofia (Ganho de Massa)</option>
+                        <option value="forca">Força</option>
+                        <option value="condicionamento">Condicionamento Físico</option>
+                        <option value="definicao">Definição Muscular</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="nivel">Nível de Experiência</label>
+                    <select id="nivel" required>
+                        <option value="">Selecione o nível</option>
+                        <option value="iniciante">Iniciante (até 3 meses)</option>
+                        <option value="intermediario">Intermediário (3 meses a 2 anos)</option>
+                        <option value="avancado">Avançado (mais de 2 anos)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="frequencia">Frequência Semanal de Treino</label>
+                    <select id="frequencia" required>
+                        <option value="">Selecione a frequência</option>
+                        <option value="2">2 dias por semana</option>
+                        <option value="3">3 dias por semana</option>
+                        <option value="4">4 dias por semana</option>
+                        <option value="5">5 dias por semana</option>
+                        <option value="6">6 dias por semana</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Restrições ou Condições Especiais</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="problema-coluna" value="problema-coluna">
+                            <label for="problema-coluna">Problema na Coluna</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="problema-joelho" value="problema-joelho">
+                            <label for="problema-joelho">Problema no Joelho</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="problema-ombro" value="problema-ombro">
+                            <label for="problema-ombro">Problema no Ombro</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hipertensao" value="hipertensao">
+                            <label for="hipertensao">Hipertensão</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="diabetes" value="diabetes">
+                            <label for="diabetes">Diabetes</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="observacoes">Observações Adicionais</label>
+                    <textarea id="observacoes" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-block">Gerar Ficha de Treino</button>
+            </form>
+        </div>
+        
+        <div id="fichaContainer" class="hidden">
+            <div class="ficha-treino">
+                <div class="ficha-header">
+                    <h2>FICHA DE TREINO PERSONALIZADA</h2>
+                    <p id="fichaAlunoInfo"></p>
+                </div>
+                
+                <div id="diasTreino" class="dias-treino">
+                    <!-- Os dias de treino serão inseridos aqui dinamicamente -->
+                </div>
+                
+                <div class="observacoes">
+                    <h3>Observações Importantes</h3>
+                    <p id="fichaObservacoes"></p>
+                </div>
+                
+                <button id="printBtn" class="btn btn-block print-btn no-print">Imprimir Ficha</button>
+                <button id="voltarBtn" class="btn btn-block no-print">Voltar para Edição</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alunoForm = document.getElementById('alunoForm');
+            const fichaContainer = document.getElementById('fichaContainer');
+            const fichaAlunoInfo = document.getElementById('fichaAlunoInfo');
+            const diasTreino = document.getElementById('diasTreino');
+            const fichaObservacoes = document.getElementById('fichaObservacoes');
+            const printBtn = document.getElementById('printBtn');
+            const voltarBtn = document.getElementById('voltarBtn');
+            
+            // Banco de exercícios por grupo muscular
+            const exercicios = {
+                peito: [
+                    { nome: "Supino Reto", series: "3-4", repeticoes: "8-12", descanso: "60-90s" },
+                    { nome: "Supino Inclinado", series: "3-4", repeticoes: "8-12", descanso: "60-90s" },
+                    { nome: "Crucifixo", series: "3", repeticoes: "12-15", descanso: "60s" },
+                    { nome: "Peck Deck", series: "3", repeticoes: "12-15", descanso: "60s" },
+                    { nome: "Flexão de Braço", series: "3", repeticoes: "até a falha", descanso: "60s" }
+                ],
+                costas: [
+                    { nome: "Barra Fixa ou Puxada Alta", series: "3-4", repeticoes: "8-12", descanso: "60-90s" },
+                    { nome: "Remada Curvada", series: "3-4", repeticoes: "8-12", descanso: "60-90s" },
+                    { nome: "Remada Cavalinho", series: "3", repeticoes: "10-12", descanso: "60s" },
+                    { nome: "Puxada Frente", series: "3", repeticoes: "10-12", descanso: "60s" },
+                    { nome: "Remada Unilateral", series: "3", repeticoes: "10-12", descanso: "60s" }
+                ],
+                pernas: [
+                    { nome: "Agachamento Livre", series: "4", repeticoes: "8-12", descanso: "90s" },
+                    { nome: "Leg Press", series: "3-4", repeticoes: "10-15", descanso: "90s" },
+                    { nome: "Cadeira Extensora", series: "3", repeticoes: "12-15", descanso: "60s" },
+                    { nome: "Mesa Flexora", series: "3", repeticoes: "12-15", descanso: "60s" },
+                    { nome: "Panturrilha Sentado", series: "4", repeticoes: "15-20", descanso: "45s" },
+                    { nome: "Stiff", series: "3", repeticoes: "10-12", descanso: "60s" }
+                ],
+                ombros: [
+                    { nome: "Desenvolvimento Militar", series: "3-4", repeticoes: "8-12", descanso: "60-90s" },
+                    { nome: "Elevação Lateral", series: "3", repeticoes: "12-15", descanso: "60s" },
+                    { nome: "Elevação Frontal", series: "3", repeticoes: "12-15", descanso: "60s" },
+                    { nome: "Remada Alta", series: "3", repeticoes: "10-12", descanso: "60s" }
+                ],
+                biceps: [
+                    { nome: "Rosca Direta", series: "3-4", repeticoes: "10-12", descanso: "60s" },
+                    { nome: "Rosca Alternada", series: "3", repeticoes: "10-12", descanso: "60s" },
+                    { nome: "Rosca Scott", series: "3", repeticoes: "10-12", descanso: "60s" },
+                    { nome: "Rosca Concentrada", series: "3", repeticoes: "12-15", descanso: "60s" }
+                ],
+                triceps: [
+                    { nome: "Tríceps Testa", series: "3-4", repeticoes: "10-12", descanso: "60s" },
+                    { nome: "Tríceps Corda", series: "3", repeticoes: "12-15", descanso: "60s" },
+                    { nome: "Tríceps Francês", series: "3", repeticoes: "10-12", descanso: "60s" },
+                    { nome: "Mergulho em Banco", series: "3", repeticoes: "até a falha", descanso: "60s" }
+                ],
+                cardio: [
+                    { nome: "Esteira", series: "1", repeticoes: "20-40 min", descanso: "-" },
+                    { nome: "Bicicleta Ergométrica", series: "1", repeticoes: "20-40 min", descanso: "-" },
+                    { nome: "Elíptico", series: "1", repeticoes: "20-40 min", descanso: "-" },
+                    { nome: "Corda Naval", series: "1", repeticoes: "15-30 min", descanso: "-" }
+                ],
+                abdominal: [
+                    { nome: "Abdominal Supra", series: "3", repeticoes: "15-20", descanso: "30s" },
+                    { nome: "Abdominal Infra", series: "3", repeticoes: "15-20", descanso: "30s" },
+                    { nome: "Prancha Abdominal", series: "3", repeticoes: "30-60s", descanso: "30s" },
+                    { nome: "Abdominal Oblíquo", series: "3", repeticoes: "15-20", descanso: "30s" }
+                ]
+            };
+            
+            // Modelos de divisão de treino por frequência semanal
+            const divisoesTreino = {
+                2: [
+                    { nome: "Treino A", grupos: ["pernas", "ombros", "abdominal"] },
+                    { nome: "Treino B", grupos: ["peito", "costas", "biceps", "triceps"] }
+                ],
+                3: [
+                    { nome: "Treino A", grupos: ["peito", "triceps", "abdominal"] },
+                    { nome: "Treino B", grupos: ["costas", "biceps", "abdominal"] },
+                    { nome: "Treino C", grupos: ["pernas", "ombros", "abdominal"] }
+                ],
+                4: [
+                    { nome: "Treino A", grupos: ["peito", "triceps"] },
+                    { nome: "Treino B", grupos: ["costas", "biceps"] },
+                    { nome: "Treino C", grupos: ["pernas"] },
+                    { nome: "Treino D", grupos: ["ombros", "abdominal"] }
+                ],
+                5: [
+                    { nome: "Treino A", grupos: ["peito"] },
+                    { nome: "Treino B", grupos: ["costas"] },
+                    { nome: "Treino C", grupos: ["pernas"] },
+                    { nome: "Treino D", grupos: ["ombros"] },
+                    { nome: "Treino E", grupos: ["biceps", "triceps", "abdominal"] }
+                ],
+                6: [
+                    { nome: "Treino A", grupos: ["peito", "triceps"] },
+                    { nome: "Treino B", grupos: ["costas", "biceps"] },
+                    { nome: "Treino C", grupos: ["pernas"] },
+                    { nome: "Treino D", grupos: ["ombros", "abdominal"] },
+                    { nome: "Treino E", grupos: ["peito", "triceps"] },
+                    { nome: "Treino F", grupos: ["costas", "biceps"] }
+                ]
+            };
+            
+            alunoForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Coletar dados do formulário
+                const nome = document.getElementById('nome').value;
+                const idade = document.getElementById('idade').value;
+                const peso = document.getElementById('peso').value;
+                const altura = document.getElementById('altura').value;
+                const objetivo = document.getElementById('objetivo').value;
+                const nivel = document.getElementById('nivel').value;
+                const frequencia = document.getElementById('frequencia').value;
+                const observacoes = document.getElementById('observacoes').value;
+                
+                // Coletar restrições
+                const restricoes = [];
+                document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                    restricoes.push(checkbox.value);
+                });
+                
+                // Calcular IMC
+                const alturaMetros = altura / 100;
+                const imc = (peso / (alturaMetros * alturaMetros)).toFixed(1);
+                
+                // Montar informações do aluno para exibição
+                fichaAlunoInfo.innerHTML = `
+                    <strong>Aluno:</strong> ${nome} | 
+                    <strong>Idade:</strong> ${idade} anos | 
+                    <strong>Peso:</strong> ${peso} kg | 
+                    <strong>Altura:</strong> ${altura} cm | 
+                    <strong>IMC:</strong> ${imc} | 
+                    <strong>Objetivo:</strong> ${getObjetivoTexto(objetivo)} | 
+                    <strong>Nível:</strong> ${getNivelTexto(nivel)}
+                `;
+                
+                // Gerar ficha de treino
+                gerarFichaTreino(nivel, objetivo, frequencia, restricoes);
+                
+                // Adicionar observações
+                let obsTexto = getObservacoesPadrao(objetivo, nivel, restricoes);
+                if (observacoes) {
+                    obsTexto += `<br><br><strong>Observações do Professor:</strong> ${observacoes}`;
+                }
+                fichaObservacoes.innerHTML = obsTexto;
+                
+                // Exibir ficha e ocultar formulário
+                alunoForm.closest('.card').classList.add('hidden');
+                fichaContainer.classList.remove('hidden');
+            });
+            
+            printBtn.addEventListener('click', function() {
+                window.print();
+            });
+            
+            voltarBtn.addEventListener('click', function() {
+                fichaContainer.classList.add('hidden');
+                alunoForm.closest('.card').classList.remove('hidden');
+            });
+            
+            function gerarFichaTreino(nivel, objetivo, frequencia, restricoes) {
+                diasTreino.innerHTML = '';
+                
+                const divisao = divisoesTreino[frequencia];
+                
+                divisao.forEach(dia => {
+                    const diaElement = document.createElement('div');
+                    diaElement.className = 'dia-treino';
+                    
+                    let diaHTML = `<h3 class="dia-titulo">${dia.nome}</h3>`;
+                    
+                    dia.grupos.forEach(grupo => {
+                        // Selecionar exercícios baseado no nível e restrições
+                        const exerciciosGrupo = selecionarExercicios(
+                            exercicios[grupo], 
+                            nivel, 
+                            objetivo, 
+                            restricoes
+                        );
+                        
+                        if (exerciciosGrupo.length > 0) {
+                            diaHTML += `<h4>${getGrupoMuscularTexto(grupo)}</h4>`;
+                            
+                            exerciciosGrupo.forEach(exercicio => {
+                                diaHTML += `
+                                    <div class="exercicio">
+                                        <div class="exercicio-nome">${exercicio.nome}</div>
+                                        <div class="exercicio-detalhes">
+                                            ${exercicio.series} séries × ${exercicio.repeticoes} reps | Descanso: ${exercicio.descanso}
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        }
+                    });
+                    
+                    // Adicionar cardio se objetivo for emagrecimento
+                    if (objetivo === 'emagrecimento') {
+                        const exerciciosCardio = selecionarExercicios(
+                            exercicios.cardio, 
+                            nivel, 
+                            objetivo, 
+                            restricoes
+                        );
+                        
+                        if (exerciciosCardio.length > 0) {
+                            diaHTML += `<h4>Cardio</h4>`;
+                            
+                            exerciciosCardio.forEach(exercicio => {
+                                diaHTML += `
+                                    <div class="exercicio">
+                                        <div class="exercicio-nome">${exercicio.nome}</div>
+                                        <div class="exercicio-detalhes">
+                                            ${exercicio.series} série × ${exercicio.repeticoes}
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        }
+                    }
+                    
+                    diaElement.innerHTML = diaHTML;
+                    diasTreino.appendChild(diaElement);
+                });
+            }
+            
+            function selecionarExercicios(listaExercicios, nivel, objetivo, restricoes) {
+                // Filtrar exercícios baseado em restrições
+                let exerciciosFiltrados = listaExercicios.filter(exercicio => {
+                    // Lógica para excluir exercícios baseado em restrições
+                    if (restricoes.includes('problema-coluna') && 
+                        (exercicio.nome.includes('Agachamento') || 
+                         exercicio.nome.includes('Stiff') || 
+                         exercicio.nome.includes('Remada Curvada'))) {
+                        return false;
+                    }
+                    
+                    if (restricoes.includes('problema-joelho') && 
+                        (exercicio.nome.includes('Agachamento') || 
+                         exercicio.nome.includes('Leg Press') || 
+                         exercicio.nome.includes('Cadeira Extensora'))) {
+                        return false;
+                    }
+                    
+                    if (restricoes.includes('problema-ombro') && 
+                        (exercicio.nome.includes('Supino') || 
+                         exercicio.nome.includes('Desenvolvimento') || 
+                         exercicio.nome.includes('Elevação'))) {
+                        return false;
+                    }
+                    
+                    return true;
+                });
+                
+                // Ajustar número de exercícios baseado no nível
+                let numExercicios;
+                switch(nivel) {
+                    case 'iniciante': numExercicios = 2; break;
+                    case 'intermediario': numExercicios = 3; break;
+                    case 'avancado': numExercicios = 4; break;
+                    default: numExercicios = 3;
+                }
+                
+                // Ajustar para objetivos específicos
+                if (objetivo === 'emagrecimento') {
+                    // Menos séries, mais repetições
+                    exerciciosFiltrados = exerciciosFiltrados.map(ex => ({
+                        ...ex,
+                        repeticoes: aumentarRepeticoes(ex.repeticoes),
+                        descanso: diminuirDescanso(ex.descanso)
+                    }));
+                } else if (objetivo === 'forca') {
+                    // Mais séries, menos repetições
+                    exerciciosFiltrados = exerciciosFiltrados.map(ex => ({
+                        ...ex,
+                        repeticoes: diminuirRepeticoes(ex.repeticoes),
+                        series: aumentarSeries(ex.series),
+                        descanso: aumentarDescanso(ex.descanso)
+                    }));
+                }
+                
+                // Retornar os primeiros N exercícios
+                return exerciciosFiltrados.slice(0, numExercicios);
+            }
+            
+            // Funções auxiliares para ajustar parâmetros do treino
+            function aumentarRepeticoes(repStr) {
+                const reps = repStr.split('-').map(r => parseInt(r));
+                return `${reps[0] + 2}-${reps[1] + 5}`;
+            }
+            
+            function diminuirRepeticoes(repStr) {
+                const reps = repStr.split('-').map(r => parseInt(r));
+                return `${Math.max(4, reps[0] - 2)}-${Math.max(6, reps[1] - 2)}`;
+            }
+            
+            function aumentarSeries(seriesStr) {
+                const series = seriesStr.split('-').map(s => parseInt(s));
+                return `${series[0] + 1}-${series[1] ? series[1] + 1 : series[0] + 1}`;
+            }
+            
+            function aumentarDescanso(descansoStr) {
+                const descanso = descansoStr.split('-').map(d => parseInt(d));
+                return `${descanso[0] + 30}-${descanso[1] ? descanso[1] + 30 : descanso[0] + 30}s`;
+            }
+            
+            function diminuirDescanso(descansoStr) {
+                const descanso = descansoStr.split('-').map(d => parseInt(d));
+                return `${Math.max(30, descanso[0] - 30)}-${descanso[1] ? Math.max(45, descanso[1] - 30) : Math.max(45, descanso[0] - 30)}s`;
+            }
+            
+            // Funções para converter valores em texto legível
+            function getObjetivoTexto(objetivo) {
+                const objetivos = {
+                    'emagrecimento': 'Emagrecimento',
+                    'hipertrofia': 'Hipertrofia (Ganho de Massa)',
+                    'forca': 'Força',
+                    'condicionamento': 'Condicionamento Físico',
+                    'definicao': 'Definição Muscular'
+                };
+                return objetivos[objetivo] || objetivo;
+            }
+            
+            function getNivelTexto(nivel) {
+                const niveis = {
+                    'iniciante': 'Iniciante',
+                    'intermediario': 'Intermediário',
+                    'avancado': 'Avançado'
+                };
+                return niveis[nivel] || nivel;
+            }
+            
+            function getGrupoMuscularTexto(grupo) {
+                const grupos = {
+                    'peito': 'Peito',
+                    'costas': 'Costas',
+                    'pernas': 'Pernas',
+                    'ombros': 'Ombros',
+                    'biceps': 'Bíceps',
+                    'triceps': 'Tríceps',
+                    'cardio': 'Cardio',
+                    'abdominal': 'Abdominal'
+                };
+                return grupos[grupo] || grupo;
+            }
+            
+            function getObservacoesPadrao(objetivo, nivel, restricoes) {
+                let observacoes = '';
+                
+                // Observações baseadas no objetivo
+                switch(objetivo) {
+                    case 'emagrecimento':
+                        observacoes = 'Foco em exercícios com maior gasto calórico e menor intervalo entre séries. Manter a frequência cardíaca elevada durante o treino. Combinar com dieta hipocalórica para melhores resultados.';
+                        break;
+                    case 'hipertrofia':
+                        observacoes = 'Priorizar a execução correta e a progressão de carga. Manter uma dieta hipercalórica com foco em proteínas. Descanso adequado entre treinos é fundamental para a recuperação muscular.';
+                        break;
+                    case 'forca':
+                        observacoes = 'Foco em exercícios multiarticulares com cargas progressivas. Manter intervalos maiores entre séries para recuperação completa. Priorizar a técnica sobre a carga.';
+                        break;
+                    case 'condicionamento':
+                        observacoes = 'Treino equilibrado entre força e resistência. Manter uma rotina constante e progressiva. Importante trabalhar todas as capacidades físicas.';
+                        break;
+                    case 'definicao':
+                        observacoes = 'Manter o volume de treino com intensidade moderada-alta. Combinar com dieta equilibrada para redução do percentual de gordura. Manter o consumo adequado de proteínas para preservar massa muscular.';
+                        break;
+                    default:
+                        observacoes = 'Seguir o programa de treino conforme orientado. Manter a regularidade e progressão das cargas.';
+                }
+                
+                // Observações baseadas no nível
+                switch(nivel) {
+                    case 'iniciante':
+                        observacoes += '<br><br>Para iniciantes: Focar na aprendizagem dos movimentos com cargas leves. Não exagerar no volume de treino inicial. Priorizar a execução correta sobre a carga.';
+                        break;
+                    case 'intermediario':
+                        observacoes += '<br><br>Para intermediários: Manter a progressão constante de cargas. Variar os estímulos periodicamente. Atenção aos sinais de overtraining.';
+                        break;
+                    case 'avancado':
+                        observacoes += '<br><br>Para avançados: Utilizar técnicas de intensificação com cuidado. Periodizar o treino para evitar estagnação. Manter atenção à recuperação.';
+                        break;
+                }
+                
+                // Observações baseadas em restrições
+                if (restricoes.length > 0) {
+                    observacoes += '<br><br><strong>Atenção às restrições:</strong> ';
+                    restricoes.forEach(restricao => {
+                        switch(restricao) {
+                            case 'problema-coluna':
+                                observacoes += 'Evitar cargas excessivas em exercícios para coluna. Manter a postura correta durante todos os movimentos. ';
+                                break;
+                            case 'problema-joelho':
+                                observacoes += 'Evitar impactos e amplitudes extremas nos exercícios de perna. Priorizar exercícios com menor sobrecarga articular. ';
+                                break;
+                            case 'problema-ombro':
+                                observacoes += 'Evitar amplitudes extremas e cargas excessivas nos exercícios de ombro. Manter a estabilização escapular durante os movimentos. ';
+                                break;
+                            case 'hipertensao':
+                                observacoes += 'Monitorar a pressão arterial regularmente. Evitar apneia (prender a respiração) durante os exercícios. ';
+                                break;
+                            case 'diabetes':
+                                observacoes += 'Monitorar a glicemia antes e após os treinos. Manter hidratação adequada. Ter carboidratos de rápida absorção disponíveis durante o treino. ';
+                                break;
+                        }
+                    });
+                }
+                
+                return observacoes;
+            }
+        });
+    </script>
+</body>
+</html>
